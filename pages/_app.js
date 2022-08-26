@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import App from "next/app";
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider, CssBaseline } from "@mui/material";
@@ -6,6 +6,7 @@ import createEmotionCache from "../utility/createEmotionCache";
 import lightTheme from "../styles/theme/lightTheme";
 import "../styles/globals.css";
 import Layout from "../containers/layout/layout";
+import AdminLayout from "../containers/layout/AdminLayout";
 import ErrorPage from "./error";
 //redux
 import { Provider } from "react-redux";
@@ -38,7 +39,11 @@ const MyApp = (props) => {
         <CacheProvider value={emotionCache}>
           <ThemeProvider theme={lightTheme}>
             <CssBaseline />
-            <Layout>{content}</Layout>
+            {pageProps.adminOnly && auth.isAdmin ? (
+              <AdminLayout>{content}</AdminLayout>
+            ) : (
+              <Layout>{content}</Layout>
+            )}
           </ThemeProvider>
         </CacheProvider>
       </PersistGate>
