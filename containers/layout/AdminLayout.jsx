@@ -16,6 +16,8 @@ import NotificationImportantTwoToneIcon from "@mui/icons-material/NotificationIm
 import AnnouncementTwoToneIcon from "@mui/icons-material/AnnouncementTwoTone";
 import DangerousTwoToneIcon from "@mui/icons-material/DangerousTwoTone";
 import LogoutTwoToneIcon from "@mui/icons-material/LogoutTwoTone";
+import PersonAddAltTwoToneIcon from '@mui/icons-material/PersonAddAltTwoTone';
+import DriveFolderUploadTwoToneIcon from '@mui/icons-material/DriveFolderUploadTwoTone';
 //
 import { useRouter } from "next/router";
 import { useDispatch } from "react-redux";
@@ -54,7 +56,7 @@ export default function AdminLayout({ children }) {
           sx={{
             height: "auto",
             width: drawerWidth - 1,
-            backgroundColor: "white",
+            backgroundColor: "#b0bec5",
             p: 1,
           }}
           alt="logo"
@@ -62,6 +64,14 @@ export default function AdminLayout({ children }) {
         />
         <Divider sx={{ backgroundColor: "white" }} />
         <List>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: "white" }}>
+                <PersonAddAltTwoToneIcon />
+              </ListItemIcon>
+              <ListItemText primary="Add User" />
+            </ListItemButton>
+          </ListItem>
           <ListItem disablePadding>
             <ListItemButton>
               <ListItemIcon sx={{ color: "white" }}>
@@ -92,6 +102,14 @@ export default function AdminLayout({ children }) {
                 <DangerousTwoToneIcon />
               </ListItemIcon>
               <ListItemText primary="Expired" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon sx={{ color: "white" }}>
+                <DriveFolderUploadTwoToneIcon />
+              </ListItemIcon>
+              <ListItemText primary="Upload Documents" />
             </ListItemButton>
           </ListItem>
         </List>

@@ -3,13 +3,13 @@ import React from 'react'
 /** @jsx jsx */
 import { css , jsx  } from '@emotion/react'
 import lightTheme from '../styles/theme/lightTheme'
-const LayoutSection = ({ children,height='300',imgUrl,isBlur , isRow , withBG , withDBG , alignItems='center' , justifyContent='center' }) => {
+const LayoutSection = ({ children,height,imgUrl,isBlur , isRow , withBG , withDBG , alignItems='center' , justifyContent='center' }) => {
     
     return (
         <section css={css`
                     width:100%;
                     text-align:center;
-                    height:${height}px;
+                    ${height ? `height:${height}px;`:'height:100%;'}
                     min-height:100%;
                     position: relative;
 

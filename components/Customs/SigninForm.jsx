@@ -26,7 +26,7 @@ const SigninForm = () => {
     if (email == "admin") {
       if (password == "admin") {
         dispatch(signinAdmin());
-        router.push("/admin");
+        router.push("/admin/alluser");
       }
     } else {
       await dispatch(fetchUserByEmail(email));

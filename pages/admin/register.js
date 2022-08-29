@@ -2,8 +2,8 @@
 /** @jsx jsx */
 import { css, jsx } from '@emotion/react'
 import React from "react";
-import { LayoutSectionR, LayoutSectionItem } from '../containers'
-import { RegisterForm } from '../components/Customs'
+import { LayoutSectionR, LayoutSectionItem } from '../../containers'
+import { RegisterForm } from '../../components/Customs'
 
 const Register = () => {
   return (
@@ -25,5 +25,14 @@ const Register = () => {
     </>
   );
 };
+
+export async function getStaticProps(context) {
+  return {
+    props: {
+      protected: true,
+      adminOnly: true,
+    },
+  };
+}
 
 export default Register;
