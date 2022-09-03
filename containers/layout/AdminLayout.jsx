@@ -65,7 +65,7 @@ export default function AdminLayout({ children }) {
         <Divider sx={{ backgroundColor: "white" }} />
         <List>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={()=>router.push("/admin/register")}>
               <ListItemIcon sx={{ color: "white" }}>
                 <PersonAddAltTwoToneIcon />
               </ListItemIcon>
@@ -73,7 +73,7 @@ export default function AdminLayout({ children }) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={()=>router.push("/admin/alluser")}>
               <ListItemIcon sx={{ color: "white" }}>
                 <GroupTwoToneIcon />
               </ListItemIcon>
@@ -105,7 +105,7 @@ export default function AdminLayout({ children }) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={()=>router.push("/admin/upload")}>
               <ListItemIcon sx={{ color: "white" }}>
                 <DriveFolderUploadTwoToneIcon />
               </ListItemIcon>

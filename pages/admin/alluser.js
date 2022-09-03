@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import AllUserTable from "../../components/Customs/AllUserTable";
 const allUser = () => {
   return (
-    <Box sx={{display:'flex',justifyContent:'center',alignItems:'center',m:2,width:'100%'}}>
+    <Box sx={{display:'flex',justifyContent:'center',alignItems:'center',width:'100%'}}>
       <AllUserTable />
     </Box>
   );

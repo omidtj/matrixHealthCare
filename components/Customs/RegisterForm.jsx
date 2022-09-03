@@ -46,7 +46,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <Container maxWidth="xs">
+    <Container sx={{width: "100%",display:'flex',justifyContent:'center'}}>
       {message && (
         <Box m={2}>
           <Stack sx={{ width: "100%" }} spacing={2}>
@@ -56,7 +56,8 @@ const RegisterForm = () => {
       )}
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box mb={2}>
+      <Stack direction="row" spacing={2} mt={2}>
+      <Box mb={2} sx={{width:'200px'}}>
           <TextField
             label="First Name"
             variant="filled"
@@ -67,7 +68,7 @@ const RegisterForm = () => {
             <p style={{ color: "darkred" }}>Full name is required.</p>
           )}
         </Box>
-        <Box mb={2}>
+        <Box mb={2} sx={{width:'200px'}}>
           <TextField
             label="Last Name"
             variant="filled"
@@ -78,29 +79,37 @@ const RegisterForm = () => {
             <p style={{ color: "darkred" }}>Full name is required.</p>
           )}
         </Box>
-        <Box mb={2}>
+      </Stack>
+      <Stack direction="row" spacing={2}>
+      <Box mb={2} sx={{width:'200px'}}>
           <TextField
             label="Email"
             variant="filled"
             {...register("email", { required: true })}
           />
         </Box>
-        <Box mb={2}>
+        <Box mb={2} sx={{width:'200px'}}>
           <TextField
             label="Contact Number"
             {...register("contactNumber", { required: true })}
             variant="filled"
           />
         </Box>
-        <Box mb={2}>
+      </Stack>
+      <Stack direction="row" spacing={2}>
+      <Box mb={2} sx={{width:'200px'}}>
           <TextField
             label="Password"
             {...register("password", { required: true })}
             variant="filled"
           />
         </Box>
+      </Stack>
+     
+  
+     
 
-        <Box mb={2}>
+        <Box mb={2} mt={2}>
           <Button
             type="submit"
             variant="contained"

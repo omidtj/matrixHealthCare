@@ -1,28 +1,35 @@
-/** @jsxRuntime classic */
-/** @jsx jsx */
-import { css, jsx } from '@emotion/react'
 import React from "react";
-import { LayoutSectionR, LayoutSectionItem } from '../../containers'
-import { RegisterForm } from '../../components/Customs'
+import {
+  Box,
+  Toolbar,
+  Typography,
+  Paper,
+} from "@mui/material";
+import PersonAddAltTwoToneIcon from '@mui/icons-material/PersonAddAltTwoTone';
+
+import { RegisterForm } from "../../components/Customs";
 
 const Register = () => {
   return (
-    <>
-      <LayoutSectionR>
-        <h2>
-          Register
-        </h2>
-      </LayoutSectionR>
-      <LayoutSectionR
-        imgUrl="/imgs/bgs/21.jpg"
-        justifyContent="center"
-        isRow
-      >
-        <LayoutSectionItem maxWidth="500" isBlur>
-          <RegisterForm />
-        </LayoutSectionItem>
-      </LayoutSectionR>
-    </>
+    <Box sx={{ width: "100%",height:'100%' }}>
+        <Toolbar
+          sx={{
+            bgcolor: "#37474f",
+            color: "white",
+          }}
+        >
+          <PersonAddAltTwoToneIcon />
+          <Typography
+            sx={{ flex: "1 1 100%", ml: 1 }}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            Add User
+          </Typography>
+        </Toolbar>
+        <RegisterForm />
+    </Box>
   );
 };
 

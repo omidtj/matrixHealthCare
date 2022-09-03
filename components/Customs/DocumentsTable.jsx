@@ -19,13 +19,15 @@ import {
 
 import { visuallyHidden } from "@mui/utils";
 import { useDispatch } from "react-redux";
-import { fetchAllUsers, deleteUserByID } from "../../lib/rtk/user/userSlice";
+import {
+  fetchAllDocs,
+  deleteDocByID,
+} from "../../lib/rtk/document/documentSlice";
 import store from "../../lib/rtk/store";
 //icons
 import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
-import GroupTwoToneIcon from "@mui/icons-material/GroupTwoTone";
-import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
-import RemoveRedEyeTwoToneIcon from "@mui/icons-material/RemoveRedEyeTwoTone";
+import TextSnippetTwoToneIcon from "@mui/icons-material/TextSnippetTwoTone";
+import DownloadForOfflineTwoToneIcon from "@mui/icons-material/DownloadForOfflineTwoTone";
 //components
 import MuiDialog from "../Static/MuiDialog";
 function descendingComparator(a, b, orderBy) {
@@ -60,20 +62,8 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "email",
-    label: "Email",
-  },
-  {
-    id: "firstName",
-    label: "First Name",
-  },
-  {
-    id: "lastName",
-    label: "Last Name",
-  },
-  {
-    id: "contactNumber",
-    label: "Contact Number",
+    id: "fileName",
+    label: "File Name",
   },
   {
     id: "actions",
@@ -132,7 +122,8 @@ function EnhancedTableHead(props) {
     </TableHead>
   );
 }
-const AllUserTable = () => {
+
+const DocumentTable = () => {
   const [order, setOrder] = React.useState("asc");
   const [orderBy, setOrderBy] = React.useState("email");
   const [page, setPage] = React.useState(0);
@@ -141,19 +132,26 @@ const AllUserTable = () => {
   const dispatch = useDispatch();
   //fetch all users
   const fetchData = async () => {
-    await dispatch(fetchAllUsers());
-    let user = store.getState().user;
-    setRows(user.users);
+    await dispatch(fetchAllDocs());
+    let doc = store.getState().doc;
+    setRows(doc.docs);
   };
   //Fetch Users At Startup
   React.useEffect(() => {
     fetchData();
   }, []);
-  //delete user
+  //delete doc
   const handleDelete = async (id) => {
-    await dispatch(deleteUserByID(id));
-    let user = store.getState().user;
-    if (user.responseOK) fetchData();
+    await dispatch(deleteDocByID(id));
+    let doc = store.getState().doc;
+    if (doc.responseOK) fetchData();
+  };
+  //download doc
+  const handleDownload = (url, fname) => {
+    let tempLink = document.createElement("a");
+    tempLink.href = url;
+    tempLink.setAttribute("download", `${fname}.docx`);
+    tempLink.click();
   };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -183,21 +181,21 @@ const AllUserTable = () => {
             color: "white",
           }}
         >
-          <GroupTwoToneIcon />
+          <TextSnippetTwoToneIcon />
           <Typography
             sx={{ flex: "1 1 100%", ml: 1 }}
             variant="h6"
             id="tableTitle"
             component="div"
           >
-            All Users
+            All Documents
           </Typography>
         </Toolbar>
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
-            size="medium"
+            size="small"
           >
             <EnhancedTableHead
               order={order}
@@ -220,38 +218,23 @@ const AllUserTable = () => {
                         scope="row"
                         padding="normal"
                       >
-                        {row.email}
-                      </TableCell>
-                      <TableCell align="left" padding="normal">
-                        {row.firstName}
-                      </TableCell>
-                      <TableCell align="left" padding="normal">
-                        {row.lastName}
-                      </TableCell>
-                      <TableCell align="left" padding="normal">
-                        {row.contactNumber}
+                        {row.fileName}
                       </TableCell>
                       <TableCell align="center" padding="normal">
                         <Stack direction="row" spacing={2}>
                           <MuiDialog
                             id={row.id}
                             handleFunction={handleDelete}
-                            title="Delete User"
+                            title="Delete Document"
                             icon={<DeleteTwoToneIcon sx={{ color: "red" }} />}
                             operation="Delete"
                           />
-
-                          <Tooltip title="Edit">
+                          <Tooltip title="Download">
                             <IconButton sx={{ color: "green" }}>
-                              <EditTwoToneIcon
-                                onClick={() => handleEdit(row.id)}
-                              />
-                            </IconButton>
-                          </Tooltip>
-                          <Tooltip title="View">
-                            <IconButton sx={{ color: "orange" }}>
-                              <RemoveRedEyeTwoToneIcon
-                                onClick={() => handleView(row.id)}
+                              <DownloadForOfflineTwoToneIcon
+                                onClick={() =>
+                                  handleDownload(row.fileUrl, row.fileName)
+                                }
                               />
                             </IconButton>
                           </Tooltip>
@@ -286,4 +269,4 @@ const AllUserTable = () => {
   );
 };
 
-export default AllUserTable;
+export default DocumentTable;
