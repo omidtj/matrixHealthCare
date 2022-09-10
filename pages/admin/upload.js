@@ -18,7 +18,7 @@ import DriveFolderUploadTwoToneIcon from "@mui/icons-material/DriveFolderUploadT
 import CloseIcon from "@mui/icons-material/Close";
 import { useDispatch } from "react-redux";
 import store from "../../lib/rtk/store";
-import { fetchAllDocs, saveDoc } from "../../lib/rtk/document/documentSlice";
+import { saveDoc } from "../../lib/rtk/document/documentSlice";
 import DocumentsTable from "../../components/Customs/DocumentsTable";
 const Form = () => {
   // a local state to store the currently selected file.
@@ -143,7 +143,7 @@ const Form = () => {
       <Stack
         direction="row"
         spacing={2}
-        sx={{ alignItems: "flex-end", justifyContent: "center" , mt:5}}
+        sx={{ alignItems: "flex-end", justifyContent: "center", mt: 5 }}
       >
         <DocumentsTable />
       </Stack>

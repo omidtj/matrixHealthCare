@@ -17,14 +17,14 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from 'dayjs';
-import AddIcon from "@mui/icons-material/Add";
+import dayjs from "dayjs";
+import SaveTwoToneIcon from "@mui/icons-material/SaveTwoTone";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import store from "../../lib/rtk/store";
-import { fetchUserByEmail } from "../../lib/rtk/auth/authSlice";
-import { saveUser } from "../../lib/rtk/user/userSlice";
+import { editUser } from "../../lib/rtk/user/userSlice";
 import { fetchAllDocs } from "../../lib/rtk/document/documentSlice";
+import { useRouter } from 'next/router'
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -36,15 +36,15 @@ const MenuProps = {
     },
   },
 };
-const RegisterForm = () => {
+const EditForm = ({ eUser }) => {
   const [message, setMessage] = useState();
   const [showError, setShowError] = useState();
-  const dispatch = useDispatch();
-
   const [selectedDocs, setSelectedDocs] = React.useState([]);
   const [selectItems, setSelectItems] = React.useState([]);
   const [exDate, setexDate] = React.useState(null);
-
+  //hooks
+  const dispatch = useDispatch();
+  const router = useRouter();
 
   //Reset Form
   const resetForm = () => {
@@ -58,6 +58,18 @@ const RegisterForm = () => {
       password: "",
     });
   };
+  //Fill Form
+  const fillForm = () => {
+    setexDate(eUser.expireDate);
+    reset({
+      firstName: eUser.firstName,
+      lastName: eUser.lastName,
+      email: eUser.email,
+      contactNumber: eUser.contactNumber,
+      password: eUser.password,
+    });
+    console.log("fill");
+  };
   //fetch all docs
   const fetchDocs = async () => {
     await dispatch(fetchAllDocs());
@@ -67,13 +79,13 @@ const RegisterForm = () => {
   //Fetch docs At Startup
   React.useEffect(() => {
     fetchDocs();
+    fillForm();
   }, []);
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    console.log(value);
-    setSelectedDocs(value);
+   setSelectedDocs(value)
   };
   const handleDataChange = (newValue) => {
     setexDate(newValue);
@@ -93,36 +105,28 @@ const RegisterForm = () => {
     password,
   }) => {
     setMessage(null);
-    await dispatch(fetchUserByEmail(email));
-    let auth = store.getState().auth;
-    if (auth.user) {
+    let documents = selectedDocs.length>0 ? selectedDocs :[];
+    let expireDate = dayjs(exDate).format("DD/MM/YYYY");
+    await dispatch(
+      editUser({
+        id: eUser.id,
+        firstName,
+        lastName,
+        email,
+        contactNumber,
+        expireDate,
+        password,
+        documents,
+
+      })
+    );
+    let user = store.getState().user;
+    if (user.responseOK) {
+     router.push('/admin/alluser')
+    } else {
       resetForm();
       setShowError(true);
-      setMessage("the email is already taken");
-    } else {
-      let documents = selectedDocs;
-      let expireDate=dayjs(exDate).format('DD/MM/YYYY');
-      await dispatch(
-        saveUser({
-          firstName,
-          lastName,
-          email,
-          contactNumber,
-          expireDate,
-          password,
-          documents,
-        })
-      );
-      let user = store.getState().user;
-      if (user.responseOK) {
-        resetForm();
-        setShowError(false);
-        setMessage("Registration Successful");
-      } else {
-        resetForm();
-        setShowError(true);
-        setMessage(auth.error);
-      }
+      setMessage(auth.error);
     }
   };
 
@@ -203,18 +207,16 @@ const RegisterForm = () => {
                   value={selectedDocs}
                   onChange={handleChange}
                   input={<OutlinedInput label="Documents" />}
-                  renderValue={(selected) =>
-                    selected.map((obj) => obj.fileName).join(", ")
-                  }
                   MenuProps={MenuProps}
+                  renderValue={(selected) => selected.map(obj=> obj.fileName).join(", ")}
                 >
                   {selectItems.map((doc) => (
                     <MenuItem key={doc.fileID} value={doc}>
                       <Checkbox
-                        checked={
-                          selectedDocs.filter((arr) => arr.fileID == doc.fileID)
-                            .length > 0
-                        }
+                         checked={
+                            selectedDocs .length > 0 &&   selectedDocs.filter((arr) => arr.fileID == doc.fileID)
+                              .length > 0
+                          }
                       />
                       <ListItemText primary={doc.fileName} />
                     </MenuItem>
@@ -240,10 +242,10 @@ const RegisterForm = () => {
           <Button
             type="submit"
             variant="contained"
-            endIcon={<AddIcon />}
+            endIcon={<SaveTwoToneIcon />}
             fullWidth
           >
-            Register
+            SAVE
           </Button>
         </Box>
       </form>
@@ -251,4 +253,4 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default EditForm;

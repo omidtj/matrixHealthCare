@@ -19,6 +19,7 @@ import {
 
 import { visuallyHidden } from "@mui/utils";
 import { useDispatch } from "react-redux";
+import { useRouter } from 'next/router'
 import { fetchAllUsers, deleteUserByID } from "../../lib/rtk/user/userSlice";
 import store from "../../lib/rtk/store";
 //icons
@@ -138,7 +139,10 @@ const AllUserTable = () => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [rows, setRows] = React.useState([]);
+  //hooks
   const dispatch = useDispatch();
+  const router = useRouter();
+
   //fetch all users
   const fetchData = async () => {
     await dispatch(fetchAllUsers());
@@ -244,7 +248,7 @@ const AllUserTable = () => {
                           <Tooltip title="Edit">
                             <IconButton sx={{ color: "green" }}>
                               <EditTwoToneIcon
-                                onClick={() => handleEdit(row.id)}
+                                onClick={() =>  router.push(`/admin/edit/${row.id}`)}
                               />
                             </IconButton>
                           </Tooltip>
