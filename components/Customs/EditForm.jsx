@@ -106,7 +106,7 @@ const EditForm = ({ eUser }) => {
   }) => {
     setMessage(null);
     let documents = selectedDocs.length>0 ? selectedDocs :[];
-    let expireDate = dayjs(exDate).format("DD/MM/YYYY");
+    let expireDate = dayjs(exDate).format("MM/DD/YYYY");
     await dispatch(
       editUser({
         id: eUser.id,

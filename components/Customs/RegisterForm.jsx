@@ -101,7 +101,7 @@ const RegisterForm = () => {
       setMessage("the email is already taken");
     } else {
       let documents = selectedDocs;
-      let expireDate=dayjs(exDate).format('DD/MM/YYYY');
+      let expireDate=dayjs(exDate).format('MM/DD/YYYY');
       await dispatch(
         saveUser({
           firstName,

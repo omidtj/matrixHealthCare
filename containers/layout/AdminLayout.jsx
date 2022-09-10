@@ -81,7 +81,7 @@ export default function AdminLayout({ children }) {
             </ListItemButton>
           </ListItem>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={()=>router.push("/admin/expire")}>
               <ListItemIcon sx={{ color: "white" }}>
                 <NotificationImportantTwoToneIcon />
               </ListItemIcon>
