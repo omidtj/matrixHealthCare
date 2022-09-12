@@ -17,6 +17,7 @@ import {
   Stack,
 } from "@mui/material";
 
+import axios from "axios";
 import { visuallyHidden } from "@mui/utils";
 import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
@@ -27,10 +28,6 @@ import store from "../../lib/rtk/store";
 import NotificationImportantTwoToneIcon from "@mui/icons-material/NotificationImportantTwoTone";
 import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsActiveTwoTone";
 
-import DeleteTwoToneIcon from "@mui/icons-material/DeleteTwoTone";
-import GroupTwoToneIcon from "@mui/icons-material/GroupTwoTone";
-import EditTwoToneIcon from "@mui/icons-material/EditTwoTone";
-import RemoveRedEyeTwoToneIcon from "@mui/icons-material/RemoveRedEyeTwoTone";
 //components
 import MuiDialog from "../Static/MuiDialog";
 function descendingComparator(a, b, orderBy) {
@@ -160,7 +157,9 @@ const ExpireTable = () => {
   const fetchData = async () => {
     await dispatch(fetchAllUsers());
     let user = store.getState().user;
-    const expiringUsers = user.users.filter((u) => defDays(u.expireDate) > 0 && defDays(u.expireDate) < 30 );
+    const expiringUsers = user.users.filter(
+      (u) => defDays(u.expireDate) > 0 && defDays(u.expireDate) < 30
+    );
     setRows(expiringUsers);
   };
   //Fetch Users At Startup
@@ -168,7 +167,26 @@ const ExpireTable = () => {
     fetchData();
   }, []);
   //notify user
-  const handleNotify = async (id) => {};
+  const handleNotify = async (user) => {
+    let notifyMsg = "Expire Soon Please do it";
+    var smsData = {
+      service_id: "service_6w3gnfm",
+      template_id: "template_s4c8jmp",
+      user_id: "Ho1qi7pDEmxoOx95b",
+      template_params: {
+        to_name: `${user.firstName} ${user.lastName}`,
+        to_email: user.email,
+        message: notifyMsg,
+      },
+    };
+    axios
+      .post("https://api.emailjs.com/api/v1.0/email/send", smsData)
+      .then((res) => {
+        console.log(res);
+        //res.data === 'OK'
+        return res;
+      });
+  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
     setOrder(isAsc ? "desc" : "asc");
@@ -250,17 +268,13 @@ const ExpireTable = () => {
                       </TableCell>
                       <TableCell align="center" padding="normal">
                         <Stack direction="row" spacing={2}>
-                          <MuiDialog
-                            id={row.id}
-                            handleFunction={handleNotify}
-                            title="Notify User"
-                            icon={
+                          <Tooltip title="Notify">
+                            <IconButton sx={{ color: "#03a9f4" }}>
                               <NotificationsActiveTwoToneIcon
-                                sx={{ color: "#002884" }}
+                                onClick={() => handleNotify(row)}
                               />
-                            }
-                            operation="Notify"
-                          />
+                            </IconButton>
+                          </Tooltip>
                         </Stack>
                       </TableCell>
                     </TableRow>
