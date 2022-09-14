@@ -15,6 +15,7 @@ import {
   IconButton,
   Tooltip,
   Stack,
+  Chip,
 } from "@mui/material";
 
 import axios from "axios";
@@ -22,11 +23,12 @@ import { visuallyHidden } from "@mui/utils";
 import { useDispatch } from "react-redux";
 import dayjs from "dayjs";
 import { useRouter } from "next/router";
-import { fetchAllUsers } from "../../lib/rtk/user/userSlice";
+import { fetchAllUsers, editUser } from "../../lib/rtk/user/userSlice";
 import store from "../../lib/rtk/store";
 //icons
 import NotificationImportantTwoToneIcon from "@mui/icons-material/NotificationImportantTwoTone";
 import NotificationsActiveTwoToneIcon from "@mui/icons-material/NotificationsActiveTwoTone";
+import CheckCircleTwoToneIcon from "@mui/icons-material/CheckCircleTwoTone";
 
 //components
 import MuiDialog from "../Static/MuiDialog";
@@ -179,13 +181,15 @@ const ExpireTable = () => {
         message: notifyMsg,
       },
     };
-    axios
+    let data = await axios
       .post("https://api.emailjs.com/api/v1.0/email/send", smsData)
       .then((res) => {
-        console.log(res);
-        //res.data === 'OK'
         return res;
       });
+    if (data.data === "OK") {
+      await dispatch(editUser({ id: user.id, isNotified: true }));
+      fetchData();
+    }
   };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -244,7 +248,12 @@ const ExpireTable = () => {
                 .map((row, index) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
-                    <TableRow hover tabIndex={-1} key={row.id}>
+                    <TableRow
+                      sx={row.isNotified && { backgroundColor: "#aed581" }}
+                      hover
+                      tabIndex={-1}
+                      key={row.id}
+                    >
                       <TableCell
                         align="left"
                         component="th"
@@ -268,13 +277,21 @@ const ExpireTable = () => {
                       </TableCell>
                       <TableCell align="center" padding="normal">
                         <Stack direction="row" spacing={2}>
-                          <Tooltip title="Notify">
-                            <IconButton sx={{ color: "#03a9f4" }}>
-                              <NotificationsActiveTwoToneIcon
-                                onClick={() => handleNotify(row)}
-                              />
-                            </IconButton>
-                          </Tooltip>
+                          {row.isNotified ? (
+                            <Chip
+                              icon={<CheckCircleTwoToneIcon />}
+                              label="Notified"
+                              color="success"
+                            />
+                          ) : (
+                            <Tooltip title="Notify">
+                              <IconButton sx={{ color: "#03a9f4" }}>
+                                <NotificationsActiveTwoToneIcon
+                                  onClick={() => handleNotify(row)}
+                                />
+                              </IconButton>
+                            </Tooltip>
+                          )}
                         </Stack>
                       </TableCell>
                     </TableRow>
