@@ -99,7 +99,7 @@ function EnhancedTableHead(props) {
     <TableHead>
       <TableRow sx={{ bgcolor: "#cfd8dc" }}>
         {headCells.map((headCell) => {
-          if (headCell.id == "actions")
+          if (headCell.id == "actions" || headCell.id == "daysToExpire")
             return (
               <TableCell
                 key={headCell.id}

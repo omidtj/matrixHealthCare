@@ -255,7 +255,7 @@ const AllUserTable = () => {
                           <Tooltip title="View">
                             <IconButton sx={{ color: "orange" }}>
                               <RemoveRedEyeTwoToneIcon
-                                onClick={() => handleView(row.id)}
+                                onClick={() => router.push(`/admin/user/${row.id}`)}
                               />
                             </IconButton>
                           </Tooltip>
