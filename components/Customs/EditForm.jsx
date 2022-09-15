@@ -19,12 +19,15 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import SaveTwoToneIcon from "@mui/icons-material/SaveTwoTone";
+//hooks
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { useRouter } from 'next/router'
+//rtk
 import store from "../../lib/rtk/store";
 import { editUser } from "../../lib/rtk/user/userSlice";
-import { fetchAllDocs } from "../../lib/rtk/document/documentSlice";
-import { useRouter } from 'next/router'
+//component
+import ErrorMsg from "../../components/Static/ErrorMsg";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -36,28 +39,18 @@ const MenuProps = {
     },
   },
 };
-const EditForm = ({ eUser }) => {
+const EditForm = ({ eUser,edocs }) => {
   const [message, setMessage] = useState();
   const [showError, setShowError] = useState();
   const [selectedDocs, setSelectedDocs] = React.useState([]);
-  const [selectItems, setSelectItems] = React.useState([]);
   const [exDate, setexDate] = React.useState(null);
   //hooks
   const dispatch = useDispatch();
   const router = useRouter();
-
-  //Reset Form
-  const resetForm = () => {
-    setSelectedDocs([]);
-    setexDate(null);
-    reset({
-      firstName: "",
-      lastName: "",
-      email: "",
-      contactNumber: "",
-      password: "",
-    });
-  };
+    //Date isValid
+    const dateIsValid = (tmpDate) => {
+      return dayjs(tmpDate, "MM/DD/YYYY", true).isValid();
+    };
   //Fill Form
   const fillForm = () => {
     setexDate(eUser.expireDate);
@@ -68,17 +61,10 @@ const EditForm = ({ eUser }) => {
       contactNumber: eUser.contactNumber,
       password: eUser.password,
     });
-    console.log("fill");
   };
-  //fetch all docs
-  const fetchDocs = async () => {
-    await dispatch(fetchAllDocs());
-    let doc = store.getState().doc;
-    setSelectItems(doc.docs);
-  };
-  //Fetch docs At Startup
+
+  //Fill At Startup
   React.useEffect(() => {
-    fetchDocs();
     fillForm();
   }, []);
   const handleChange = (event) => {
@@ -105,6 +91,11 @@ const EditForm = ({ eUser }) => {
     password,
   }) => {
     setMessage(null);
+    if (exDate && !dateIsValid(exDate)) {
+      setShowError(true);
+      setMessage("invalid Date");
+      return;
+    }
     let documents = selectedDocs.length>0 ? selectedDocs :[];
     let expireDate = dayjs(exDate).format("MM/DD/YYYY");
     await dispatch(
@@ -124,7 +115,6 @@ const EditForm = ({ eUser }) => {
     if (user.responseOK) {
      router.push('/admin/alluser')
     } else {
-      resetForm();
       setShowError(true);
       setMessage(auth.error);
     }
@@ -149,51 +139,76 @@ const EditForm = ({ eUser }) => {
             <TextField
               label="First Name"
               variant="filled"
-              {...register("firstName", { required: true })}
+              {...register("firstName", { required: "This is required" })}
               error={!!errors?.firstName}
             />
             {errors?.firstName && (
-              <p style={{ color: "darkred" }}>Full name is required.</p>
+              <ErrorMsg errTXT="This is required" errColor="red" />
             )}
           </Box>
           <Box mb={2} sx={{ width: "200px" }}>
             <TextField
               label="Last Name"
               variant="filled"
-              {...register("lastName", { required: true })}
+              {...register("lastName", { required: "This is required" })}
               error={!!errors?.lastName}
             />
-            {errors?.lastName && (
-              <p style={{ color: "darkred" }}>Full name is required.</p>
+           {errors?.lastName && (
+              <ErrorMsg errTXT="This is required" errColor="red" />
+            )}
+          </Box>
+        </Stack>
+        <Stack direction="row" spacing={2}>
+          <Box mb={2} sx={{ width: "200px" }}>
+          <TextField
+              label="Email"
+              variant="filled"
+              {...register("email", {
+                required: "This is required.",
+                pattern: {
+                  value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  message: "Invalid email address",
+                },
+              })}
+              error={!!errors?.email}
+            />
+            {errors?.email && (
+              <>
+                {errors.email.type === "required" && (
+                  <ErrorMsg errTXT={errors.email.message} errColor="red" />
+                )}
+                {errors.email.type === "pattern" && (
+                  <ErrorMsg errTXT={errors.email.message} errColor="orange" />
+                )}
+              </>
+            )}
+
+          </Box>
+          <Box mb={2} sx={{ width: "200px" }}>
+            <TextField
+              label="Contact Number"
+              type="number"
+              {...register("contactNumber", { required: "This is required" })}
+              variant="filled"
+            />
+             {errors?.contactNumber && (
+              <ErrorMsg errTXT="This is required" errColor="red" />
             )}
           </Box>
         </Stack>
         <Stack direction="row" spacing={2}>
           <Box mb={2} sx={{ width: "200px" }}>
             <TextField
-              label="Email"
-              variant="filled"
-              {...register("email", { required: true })}
-            />
-          </Box>
-          <Box mb={2} sx={{ width: "200px" }}>
-            <TextField
-              label="Contact Number"
-              {...register("contactNumber", { required: true })}
-              variant="filled"
-            />
-          </Box>
-        </Stack>
-        <Stack direction="row" spacing={2}>
-          <Box mb={2} sx={{ width: "200px" }}>
-            <TextField
               label="Password"
-              {...register("password", { required: true })}
+              {...register("password", { required: "This is required" })}
               variant="filled"
             />
+               {errors?.password && (
+              <ErrorMsg errTXT="This is required" errColor="red" />
+            )}
           </Box>
         </Stack>
-        {selectItems.length != 0 && (
+        {edocs?.length != 0 && (
           <Stack direction="row" spacing={2}>
             <Box mb={2} sx={{ width: "200px" }}>
               <FormControl sx={{ width: 200 }}>
@@ -210,7 +225,7 @@ const EditForm = ({ eUser }) => {
                   MenuProps={MenuProps}
                   renderValue={(selected) => selected.map(obj=> obj.fileName).join(", ")}
                 >
-                  {selectItems.map((doc) => (
+                  {edocs?.map((doc) => (
                     <MenuItem key={doc.fileID} value={doc}>
                       <Checkbox
                          checked={

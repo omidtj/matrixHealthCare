@@ -28,6 +28,7 @@ const SigninForm = () => {
         dispatch(signinAdmin());
         router.push("/admin/alluser");
       }
+      else setMessage("password is incorrect");
     } else {
       await dispatch(fetchUserByEmail(email));
       let auth = store.getState().auth;
@@ -62,6 +63,7 @@ const SigninForm = () => {
         <Box m={2}>
           <TextField
             label="Password"
+            type="password"
             {...register("password", { required: true })}
             variant="filled"
           />

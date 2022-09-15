@@ -17,15 +17,17 @@ import {
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import AddIcon from "@mui/icons-material/Add";
+//hooks
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
+//rtk
 import store from "../../lib/rtk/store";
 import { fetchUserByEmail } from "../../lib/rtk/auth/authSlice";
 import { saveUser } from "../../lib/rtk/user/userSlice";
-import { fetchAllDocs } from "../../lib/rtk/document/documentSlice";
-
+//components
+import ErrorMsg from "../../components/Static/ErrorMsg";
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -36,15 +38,12 @@ const MenuProps = {
     },
   },
 };
-const RegisterForm = () => {
+const RegisterForm = ({edocs}) => {
   const [message, setMessage] = useState();
   const [showError, setShowError] = useState();
+  const [selectedDocs, setSelectedDocs] = useState([]);
+  const [exDate, setexDate] = useState(null);
   const dispatch = useDispatch();
-
-  const [selectedDocs, setSelectedDocs] = React.useState([]);
-  const [selectItems, setSelectItems] = React.useState([]);
-  const [exDate, setexDate] = React.useState(null);
-
 
   //Reset Form
   const resetForm = () => {
@@ -58,21 +57,14 @@ const RegisterForm = () => {
       password: "",
     });
   };
-  //fetch all docs
-  const fetchDocs = async () => {
-    await dispatch(fetchAllDocs());
-    let doc = store.getState().doc;
-    setSelectItems(doc.docs);
+  //Date isValid
+  const dateIsValid = (tmpDate) => {
+    return dayjs(tmpDate, "MM/DD/YYYY", true).isValid();
   };
-  //Fetch docs At Startup
-  React.useEffect(() => {
-    fetchDocs();
-  }, []);
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    console.log(value);
     setSelectedDocs(value);
   };
   const handleDataChange = (newValue) => {
@@ -93,6 +85,12 @@ const RegisterForm = () => {
     password,
   }) => {
     setMessage(null);
+    if (exDate && !dateIsValid(exDate)) {
+      resetForm();
+      setShowError(true);
+      setMessage("invalid Date");
+      return;
+    }
     await dispatch(fetchUserByEmail(email));
     let auth = store.getState().auth;
     if (auth.user) {
@@ -101,7 +99,7 @@ const RegisterForm = () => {
       setMessage("the email is already taken");
     } else {
       let documents = selectedDocs;
-      let expireDate=dayjs(exDate).format('MM/DD/YYYY');
+      let expireDate = dayjs(exDate).format("MM/DD/YYYY");
       await dispatch(
         saveUser({
           firstName,
@@ -121,7 +119,7 @@ const RegisterForm = () => {
       } else {
         resetForm();
         setShowError(true);
-        setMessage(auth.error);
+        setMessage(user.error);
       }
     }
   };
@@ -145,22 +143,22 @@ const RegisterForm = () => {
             <TextField
               label="First Name"
               variant="filled"
-              {...register("firstName", { required: true })}
+              {...register("firstName", { required: "This is required." })}
               error={!!errors?.firstName}
             />
             {errors?.firstName && (
-              <p style={{ color: "darkred" }}>Full name is required.</p>
+              <ErrorMsg errTXT="This is required" errColor="red" />
             )}
           </Box>
           <Box mb={2} sx={{ width: "200px" }}>
             <TextField
               label="Last Name"
               variant="filled"
-              {...register("lastName", { required: true })}
+              {...register("lastName", { required: "This is required." })}
               error={!!errors?.lastName}
             />
             {errors?.lastName && (
-              <p style={{ color: "darkred" }}>Full name is required.</p>
+              <ErrorMsg errTXT="This is required" errColor="red" />
             )}
           </Box>
         </Stack>
@@ -169,15 +167,37 @@ const RegisterForm = () => {
             <TextField
               label="Email"
               variant="filled"
-              {...register("email", { required: true })}
+              {...register("email", {
+                required: "This is required.",
+                pattern: {
+                  value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                  message: "Invalid email address",
+                },
+              })}
+              error={!!errors?.email}
             />
+            {errors?.email && (
+              <>
+                {errors.email.type === "required" && (
+                  <ErrorMsg errTXT={errors.email.message} errColor="red" />
+                )}
+                {errors.email.type === "pattern" && (
+                  <ErrorMsg errTXT={errors.email.message} errColor="orange" />
+                )}
+              </>
+            )}
           </Box>
           <Box mb={2} sx={{ width: "200px" }}>
             <TextField
               label="Contact Number"
+              type="number"
               {...register("contactNumber", { required: true })}
+              error={!!errors?.contactNumber}
               variant="filled"
             />
+            {errors?.contactNumber && (
+              <ErrorMsg errTXT="This is required" errColor="red" />
+            )}
           </Box>
         </Stack>
         <Stack direction="row" spacing={2}>
@@ -185,11 +205,15 @@ const RegisterForm = () => {
             <TextField
               label="Password"
               {...register("password", { required: true })}
+              error={!!errors?.password}
               variant="filled"
             />
+            {errors?.password && (
+              <ErrorMsg errTXT="This is required" errColor="red" />
+            )}
           </Box>
         </Stack>
-        {selectItems.length != 0 && (
+        {edocs?.length != 0 && (
           <Stack direction="row" spacing={2}>
             <Box mb={2} sx={{ width: "200px" }}>
               <FormControl sx={{ width: 200 }}>
@@ -208,7 +232,7 @@ const RegisterForm = () => {
                   }
                   MenuProps={MenuProps}
                 >
-                  {selectItems.map((doc) => (
+                  {edocs?.map((doc) => (
                     <MenuItem key={doc.fileID} value={doc}>
                       <Checkbox
                         checked={
@@ -229,13 +253,14 @@ const RegisterForm = () => {
                   inputFormat="MM/DD/YYYY"
                   value={exDate}
                   onChange={handleDataChange}
-                  renderInput={(params) => <TextField {...params} />}
+                  renderInput={(params) => (
+                    <TextField {...params} sx={{ width: "100%" }} />
+                  )}
                 />
               </LocalizationProvider>
             </Box>
           </Stack>
         )}
-
         <Box mb={2} mt={2}>
           <Button
             type="submit"

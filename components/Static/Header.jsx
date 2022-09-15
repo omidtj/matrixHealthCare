@@ -44,28 +44,7 @@ const ButtonSin = () => (
     </Link>
   </Box>
 );
-const ButtonSup = () => (
-  <Box m={1}>
-    <Link href="/register">
-      <Button
-        sx={{
-          backgroundColor: "primary",
-          color: blue[500],
-          border: `2px solid ${blue[500]}`,
-          "&:hover": {
-            backgroundColor: "primary",
-            color: blue[300],
-            border: `2px solid ${blue[300]}`,
-          },
-        }}
-        endIcon={<AddIcon />}
-        fullWidth
-      >
-        Register
-      </Button>
-    </Link>
-  </Box>
-);
+
 const Header = () => {
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);
   const dispatch = useDispatch();
@@ -145,7 +124,6 @@ const Header = () => {
               >
                 {!isSignedIn && (
                   <>
-                    <ButtonSup />
                     <ButtonSin />
                   </>
                 )}
@@ -363,7 +341,6 @@ const Header = () => {
             <Box sx={{ flexGrow: 0, display: { xs: "none", md: "flex" } }}>
             {!isSignedIn ? (
                   <>
-                    <ButtonSup />
                     <ButtonSin />
                   </>
                 ) : (<>
