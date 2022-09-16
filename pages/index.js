@@ -6,8 +6,10 @@ import { css, jsx} from '@emotion/react'
 import { LayoutSection, LayoutSectionR, LayoutSectionItem } from '../containers'
 import { Button, Hr, Img } from '../components/HtmlElements'
 import { MuiTabsFilled , HealthBanner , MuiStepper } from '../components/Static'
+import { useRouter } from 'next/router'
 
 export default function Home() {
+  const router = useRouter();
   return (
     <>
       <Head>
@@ -28,7 +30,7 @@ export default function Home() {
         <LayoutSectionItem maxWidth='500'>
           <Img imgUrl="/imgs/bgs/2.jpg" width='400' />
           <br />
-          <Button widthAll buttonType="dark">Get Cared for a loved one </Button>
+          <Button widthAll buttonType="dark" onClick={()=>router.push('/contact') }>Get Cared for a loved one </Button>
         </LayoutSectionItem>
       </LayoutSectionR>
       <HealthBanner />
@@ -49,7 +51,7 @@ export default function Home() {
           <Hr isDark />
           <p css={css`height:200px`}>  We help people recover from illness, injury or surgery, avoid unnecessary rehospitalization and manage long-term conditions with nursing, therapy and other services at home, all coordinated with physicians and other healthcare providers.
             </p>
-          <Button widthAll buttonType="dark">
+          <Button widthAll buttonType="dark" onClick={()=>router.push('/services/homehealth') }>
             Home Health Care
             </Button>
         </LayoutSectionItem>
@@ -60,7 +62,7 @@ export default function Home() {
           <p css={css`height:200px`}>
             Palliative care provides patients with relief from the symptoms, pain and stress of a serious illness—whatever the diagnosis.
             </p>
-          <Button widthAll buttonType="light">
+          <Button widthAll buttonType="light" onClick={()=>router.push('/services/palliativecare') }>
             Palliative Care
             </Button>
         </LayoutSectionItem>
@@ -71,7 +73,7 @@ export default function Home() {
           <p css={css`height:200px`}>
             We are here to provide physical, emotional, and spiritual care and support during a life-limiting illness, along with help for families and caregivers.
             </p>
-          <Button widthAll buttonType="main">
+          <Button widthAll buttonType="main" onClick={()=>router.push('/services/hospicecare') }>
             Hospice Care
             </Button>
         </LayoutSectionItem>
@@ -88,7 +90,7 @@ export default function Home() {
         <LayoutSectionItem maxWidth='500'>
           <Img imgUrl="/imgs/bgs/6.jpg" width='400' />
           <br />
-          <Button widthAll buttonType="dark">Contact US for more details</Button>
+          <Button widthAll buttonType="dark" onClick={()=>router.push('/contact') }>Contact US for more details</Button>
         </LayoutSectionItem>
       </LayoutSectionR>
       <LayoutSectionR height="600">
