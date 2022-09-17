@@ -47,6 +47,8 @@ const ButtonSin = () => (
 
 const Header = () => {
   const isSignedIn = useSelector((state) => state.auth.isSignedIn);
+  const isAdmin = useSelector((state) => state.auth.isAdmin);
+
   const dispatch = useDispatch();
   const router = useRouter();
   const theme = useTheme();
@@ -87,6 +89,14 @@ const Header = () => {
     dispatch(signout());
     setAnchorElUser(null)
     router.push('/signin') 
+  }
+  const handleProfile =()=>{
+    setAnchorElUser(null)
+    if(isAdmin)
+      router.push('/admin/alluser') 
+    else(isSignedIn)
+    router.push('/user') 
+
   }
   return (
     <AppBar position="static">
@@ -136,10 +146,11 @@ const Header = () => {
               component="img"
               sx={{
                 height: "auto",
-                width: 250,
+                width: 200,
                 display: { xs: "flex", md: "none" },
                 mr: 1,
-                flexGrow: 0,
+                flexGrow: 1,
+               
               }}
               alt="logo"
               src="/imgs/logo.png"
@@ -173,7 +184,7 @@ const Header = () => {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                      <MenuItem  onClick={handleCloseUserMenu}>
+                      <MenuItem  onClick={handleProfile}>
                         Profile
                       </MenuItem>
                       <MenuItem  onClick={handleLogOut}>
@@ -366,7 +377,7 @@ const Header = () => {
                     open={Boolean(anchorElUser)}
                     onClose={handleCloseUserMenu}
                   >
-                     <MenuItem  onClick={handleCloseUserMenu}>
+                     <MenuItem  onClick={handleProfile}>
                         Profile
                       </MenuItem>
                       <MenuItem  onClick={handleLogOut}>
