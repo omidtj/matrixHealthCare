@@ -94,7 +94,7 @@ const Header = () => {
     setAnchorElUser(null)
     if(isAdmin)
       router.push('/admin/alluser') 
-    else(isSignedIn)
+    else if(isSignedIn)
     router.push('/user') 
 
   }

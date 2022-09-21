@@ -71,7 +71,7 @@ const User = () => {
   };
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const POST_URL = "https://api.cloudinary.com/v1_1/ded8buvyc/auto/upload";
+    const POST_URL = `${process.env.NEXT_PUBLIC_UPLOAD}`;
     ////
     const formData = new FormData();
     formData.append("file", selectedFile);
@@ -235,7 +235,7 @@ const User = () => {
               component="label"
             >
               Upload File
-              <input type="file" hidden onChange={handleFileSelect} />
+              <input type="file" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden onChange={handleFileSelect} />
             </Button>
             {selectedFile && (
               <Chip

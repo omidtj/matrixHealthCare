@@ -172,9 +172,9 @@ const ExpireTable = () => {
   const handleNotify = async (user) => {
     let notifyMsg = "Expire Soon Please do it";
     var smsData = {
-      service_id: "service_6w3gnfm",
-      template_id: "template_s4c8jmp",
-      user_id: "Ho1qi7pDEmxoOx95b",
+      service_id: `${process.env.NEXT_PUBLIC_SERVICE_ID}`,
+      template_id: `${process.env.NEXT_PUBLIC_TEMPLATE_ID}`,
+      user_id: `${process.env.NEXT_PUBLIC_USER_ID}`,
       template_params: {
         to_name: `${user.firstName} ${user.lastName}`,
         to_email: user.email,
@@ -182,7 +182,7 @@ const ExpireTable = () => {
       },
     };
     let data = await axios
-      .post("https://api.emailjs.com/api/v1.0/email/send", smsData)
+      .post(`${process.env.NEXT_PUBLIC_EMAIL}`, smsData)
       .then((res) => {
         return res;
       });

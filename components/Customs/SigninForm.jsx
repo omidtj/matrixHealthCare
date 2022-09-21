@@ -24,7 +24,7 @@ const SigninForm = () => {
 
   const onSubmit = async ({ email, password }) => {
     if (email == "admin") {
-      if (password == "admin") {
+      if (password == `${process.env.NEXT_PUBLIC_PASSWORD}`) {
         dispatch(signinAdmin());
         router.push("/admin/alluser");
       }
