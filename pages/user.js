@@ -155,8 +155,9 @@ const User = () => {
           sx={{ alignItems: "center", justifyContent: "center", m: 5 }}
         >
           {auth.user.documents?.length > 0 ? (
-            auth.user.documents.map((doc) => (
+            auth.user.documents.map((doc, index) => (
               <Button
+                key={index}
                 size="large"
                 variant="contained"
                 startIcon={<ArrowCircleDownTwoToneIcon />}
@@ -235,7 +236,12 @@ const User = () => {
               component="label"
             >
               Upload File
-              <input type="file" accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden onChange={handleFileSelect} />
+              <input
+                type="file"
+                accept="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                hidden
+                onChange={handleFileSelect}
+              />
             </Button>
             {selectedFile && (
               <Chip

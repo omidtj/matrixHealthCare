@@ -38,8 +38,9 @@ export default function Users({ user, error }) {
           sx={{ alignItems: "center", justifyContent: "center", m: 5 }}
         >
           {user.upDocuments?.length > 0 ? (
-            user.upDocuments.map((doc) => (
+            user.upDocuments.map((doc,index) => (
               <Button
+                key={index}
                 size="large"
                 variant="contained"
                 startIcon={<ArrowCircleDownTwoToneIcon />}

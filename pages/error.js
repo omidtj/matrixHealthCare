@@ -2,7 +2,7 @@ import React from 'react'
 
 const error = () => {
   return (
-    <div>Sorry, you don't have access </div>
+    <div>Sorry, you don&apos;t have access </div>
   )
 }
 
