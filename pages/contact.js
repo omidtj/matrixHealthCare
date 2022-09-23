@@ -13,7 +13,7 @@ const Contact = () => {
             <LayoutSectionR isRow>
                 <LayoutSectionItem maxWidth='1000'>
                     <p>
-                        We are once phone call away to help! If your have requirements/queries about our services; fill up the contact form below and we'll do our best to reply within 24 hours Alternatively simply pickup the phone and give us a call.<br /><br />
+                        We are once phone call away to help! If your have requirements/queries about our services; fill up the contact form below and we&apos;ll do our best to reply within 24 hours Alternatively simply pickup the phone and give us a call.<br /><br />
 
                         Serving Los Angeles County, San Fernando Valley, San Bernardino, South Bay and Orange County
                     </p>
